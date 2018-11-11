@@ -39,7 +39,7 @@ AsteroidList::AsteroidList(const AsteroidList& src)
     AsteroidListItem *nptr = NULL;
     head.setNext(NULL);
     while(ptr != NULL){
-        nptr = new AsteroidListItem(ptr->data); //is that pointing to the correct place? 
+        nptr = new AsteroidListItem(ptr->getData()); //is that pointing to the correct place? 
         if(last == NULL) head.setNext(nptr);
         else last->setNext(nptr);
         ptr = ptr->getNext();
@@ -56,9 +56,9 @@ AsteroidList::~AsteroidList() {
     
     AsteroidListItem* ptr;
     while(head.getNext() != NULL){ //use getnext func
-        const ptr = head;
-        head = ptr->getNext();
-        delete ptr->data;//first delete data to make sure no mem leaks
+        ptr = head;
+        head.setNext(ptr->getNext());
+        delete (*ptr).data = NULL;//first delete data to make sure no mem leaks
         delete ptr;
     }
     
