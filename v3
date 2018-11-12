@@ -19,8 +19,8 @@ AsteroidListItem::AsteroidListItem(Asteroid a) {
 }
 
 AsteroidListItem::~AsteroidListItem() {
-    this->setNext(NULL);
-    delete(data);
+    delete(data)
+    next = NULL;
     
     
 }
@@ -55,7 +55,7 @@ AsteroidList::~AsteroidList() {
     if(head.getNext() != NULL){
     AsteroidListItem* ptr;
     AsteroidListItem* hptr = head.getNext();
-    while(head.hasNext() == true){ //use getnext func
+    while(hptr->hasNext() == true){ //use getnext func
         ptr = hptr;
         hptr = hptr->getNext();
         delete ptr;
@@ -122,7 +122,7 @@ int AsteroidList::size() const {
     }
    
     //const AsteroidListItem* tptr = head.getNext();
-    count++;
+    
     while (tptr->hasNext()){
         count++;
         tptr = tptr->getNext();
