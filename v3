@@ -278,8 +278,6 @@ AsteroidListItem* AsteroidList::eraseAfter(AsteroidListItem* prev) {
     if(prev->hasNext()){
     AsteroidListItem *tptr0 = prev->getNext()->getNext();
     AsteroidListItem *tptr1 = prev->getNext();
-    delete &(tptr1->getData());
-    delete tptr1->setNext(NULL);
     delete tptr1;
     prev->setNext(tptr0);
     }
