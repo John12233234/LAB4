@@ -1,0 +1,339 @@
+#include <galaxy-explorer/AsteroidList.hpp>
+
+
+//notes for continuing forward head IS NOT supposed to have any data
+//Fix the destructor, major problems include traversing the list properly 
+//figure out how to deal with the "const" in some functions
+//ask if before end is supposed to give the node that points to NULL or the one that is before that one.
+
+
+
+AsteroidListItem::AsteroidListItem() {
+	this->setNext(NULL);
+	this->data = NULL;
+} //since this is a class that extends outside of its own bounds. must use deep copy/deleting to move things 
+
+AsteroidListItem::AsteroidListItem(Asteroid a) {
+	this->next = NULL;
+	this->data = new Asteroid(a.getID(),a.getMass(),a.getHealth(),a.getCurrentHitbox(),a.getVelocity());
+}
+
+AsteroidListItem::~AsteroidListItem() {
+    this->setNext(NULL);
+    delete(data);
+    
+    
+}
+
+AsteroidList::AsteroidList() //constuctor but how does it work?
+{
+    head.setNext(NULL);
+   // head->data = NULL;
+    //setting all data pointers to NULL
+    //is an asteroidList contstructor 
+    
+    
+    
+}
+
+AsteroidList::AsteroidList(const AsteroidList& src)
+{
+    const AsteroidListItem *ptr = &src.head;
+    AsteroidListItem *last = NULL;
+    AsteroidListItem *nptr = NULL;
+    head.setNext(NULL);
+    while(ptr != NULL){
+        nptr = new AsteroidListItem(ptr->getData()); //is that pointing to the correct place? 
+        if(last == NULL) head.setNext(nptr);
+        else last->setNext(nptr);
+        ptr = ptr->getNext();
+        last = nptr;
+    }
+        
+    
+    
+	// The functions in this class are listed in a suggested order of implementation,
+	// except for this one and the destructor (because you should put all your constructors together).
+}
+
+AsteroidList::~AsteroidList() {
+   
+    AsteroidListItem* ptr;
+    while(head.hasNext()){ //use getnext func
+        ptr = &head;
+        
+        head.setNext(head.getNext()->getNext());//first delete data to make sure no mem leaks
+        delete &(ptr->getData()); 
+        delete ptr;
+    }
+    
+	// The functions in this class are listed in a suggested order of implementation,
+
+    	// except for this one and the copy constructor (because you should put all your constructors together).
+    
+} 
+
+void AsteroidList::pushFront(Asteroid e) { //iterate linked list by one. so take the head and make it point to that new ptr 
+    AsteroidListItem * tptr0 = head.getNext();
+    AsteroidListItem * tptr1 = new AsteroidListItem(e);
+    
+    if(isEmpty()){
+     //   AsteroidListItem* = new Asteroid(e);
+        head.setNext(tptr1);
+    }
+    else{
+        head.setNext(tptr1);
+        tptr1->setNext(tptr0);
+        
+        
+        
+        
+        
+    }
+     
+}
+
+Asteroid& AsteroidList::front() { //hwhat? 
+    //AsteroidListItem* tptr = head.getNext();
+    if(head.hasNext())
+    
+    return(head.getNext()->getData());
+    else
+        return *(Asteroid*)nullptr;
+}
+
+const Asteroid& AsteroidList::front() const {
+    
+    if(head.hasNext())
+    
+    return(head.getNext()->getData());
+    else
+	return *(const Asteroid*)nullptr;
+}
+
+bool AsteroidList::isEmpty() const {
+    if(head.getNext() == NULL)
+	return true;
+}
+
+int AsteroidList::size() const {
+    int count = 0;
+    const AsteroidListItem* tptr = head.getNext();
+    while (tptr->hasNext()){
+        count++;
+        tptr = tptr ->getNext();
+    }
+	return count;
+}
+
+AsteroidListItem* AsteroidList::beforeBegin() {
+    
+    //return actual head
+    AsteroidListItem* headptr = &head;
+    
+    if(head.hasNext())
+        return headptr;
+    else
+	return nullptr;
+}
+
+const AsteroidListItem* AsteroidList::beforeBegin() const {
+     const AsteroidListItem* headptr = &head;
+    
+    if(head.hasNext())
+        return headptr;
+    else
+	return nullptr;
+}
+
+AsteroidListItem* AsteroidList::begin() {
+    //figure out if i should just be returning the address of the second item rather than a function defined ptr
+    //g++ should take care of out of scope variable 
+    if(head.hasNext()){
+        AsteroidListItem* secPtr = head.getNext();
+        return(secPtr);
+    }
+    
+    
+	return nullptr;
+}
+
+const AsteroidListItem* AsteroidList::begin() const {
+    if(head.hasNext()){
+        const AsteroidListItem* secPtr = head.getNext();
+        return(secPtr);
+    }
+    
+	return nullptr;
+}
+
+AsteroidListItem* AsteroidList::beforeEnd() {
+    
+    AsteroidListItem* tptr = &head;
+    
+    
+    if(head.hasNext() == false)
+        return tptr; 
+    else{
+        
+        
+    while(tptr->getNext()->hasNext()){
+        tptr = tptr->getNext();
+    }
+    
+    return tptr;
+        
+    
+    
+    }
+    
+//	return nullptr;
+}
+
+const AsteroidListItem* AsteroidList::beforeEnd() const {
+    const AsteroidListItem* tptr = &head;
+    
+    
+    if(head.hasNext() == false)
+        return tptr; 
+    else{
+        
+        
+    while(tptr->getNext()->hasNext()){ //why am i allowed to change this 
+        tptr = tptr->getNext();
+    }
+    
+    return tptr;
+        
+    
+    
+    }
+	return nullptr;
+}
+
+AsteroidListItem* AsteroidList::end() {
+    
+    AsteroidListItem* tptr = &head;
+    if(head.hasNext() == false)
+        return &head;
+    else{
+    while(tptr->hasNext())
+        tptr = tptr->getNext();
+    
+    return tptr;
+    }
+    
+   
+        
+        
+}
+
+const AsteroidListItem* AsteroidList::end() const {
+    const AsteroidListItem* tptr = &head;
+    if(head.hasNext() == false)
+        return &head;
+    else{
+    while(tptr->hasNext())
+        tptr = tptr->getNext();
+    
+    return tptr;
+    }
+        
+        
+}
+
+AsteroidListItem* AsteroidList::insertAfter(AsteroidListItem* prev, Asteroid e) {
+    
+    
+    if(prev->hasNext()){
+    AsteroidListItem * tptr0 = prev->getNext();
+    AsteroidListItem * tptr1 = new AsteroidListItem(e);
+    
+    
+    
+        prev->setNext(tptr1);
+        tptr1->setNext(tptr0);
+        
+      
+	return prev;
+    }
+    else{
+        prev->setNext(new AsteroidListItem(e));
+        
+        
+        
+        
+        
+    }
+        
+        
+}
+
+AsteroidListItem* AsteroidList::insertAfter(AsteroidListItem* prev, const AsteroidList& others) {
+    
+     AsteroidList othersCopy(others);
+    
+        AsteroidListItem * tptr0 = othersCopy.end();
+        AsteroidListItem * tptr1 = prev->getNext();
+        
+        prev->setNext(othersCopy.head.getNext()); //see if that's actually right?? 
+        tptr0->setNext(tptr1);
+    
+    
+	return prev;
+        
+        //where are the header files???? and why do these return null 
+}
+
+AsteroidListItem* AsteroidList::eraseAfter(AsteroidListItem* prev) {
+    
+    if(prev->hasNext()){
+    AsteroidListItem *tptr0 = prev->getNext()->getNext();
+    AsteroidListItem *tptr1 = prev->getNext();
+    delete &(tptr1->getData());
+    delete tptr1->setNext(NULL);
+    delete tptr1;
+    prev->setNext(tptr0);
+    }
+    else
+        return prev;
+	//return nullptr;
+        
+        
+        
+}
+
+void AsteroidList::clear() { //can i just call the destructor ??
+    
+    AsteroidListItem* ptr;
+    while(head.hasNext()){ //use getnext func
+        ptr = &head;
+        
+        head.setNext(head.getNext()->getNext());//first delete data to make sure no mem leaks
+        delete &(ptr->getData()); 
+        delete ptr;
+    }
+    
+    
+    
+}
+
+AsteroidList& AsteroidList::operator=(const AsteroidList& src) {
+    
+    this->clear();
+    
+    const AsteroidListItem *ptr = &src.head;
+    AsteroidListItem *last = NULL;
+    AsteroidListItem *nptr = NULL;
+    head.setNext(NULL);
+    while(ptr != NULL){
+        nptr = new AsteroidListItem(ptr->getData()); //is that pointing to the correct place? 
+        if(last == NULL) head.setNext(nptr);
+        else last->setNext(nptr);
+        ptr = ptr->getNext();
+        last = nptr;
+    }
+        
+    
+    
+}
