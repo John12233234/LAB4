@@ -9,12 +9,12 @@
 
 
 AsteroidListItem::AsteroidListItem() {
-	this->setNext(NULL);
-	this->data = NULL;
+	this->next = nullptr;
+	this->data = nullptr;
 } //since this is a class that extends outside of its own bounds. must use deep copy/deleting to move things 
 
 AsteroidListItem::AsteroidListItem(Asteroid a) {
-	this->next = NULL;
+	this->next = nullptr;
 	this->data = new Asteroid(a.getID(),a.getMass(),a.getHealth(),a.getCurrentHitbox(),a.getVelocity());
 }
 
@@ -27,13 +27,7 @@ AsteroidListItem::~AsteroidListItem() {
 
 AsteroidList::AsteroidList() //constuctor but how does it work?
 {
-    head.setNext(NULL);
-   // head->data = NULL;
-    //setting all data pointers to NULL
-    //is an asteroidList contstructor 
-    
-    
-    
+
 }
 
 AsteroidList::AsteroidList(const AsteroidList& src)
@@ -57,13 +51,13 @@ AsteroidList::AsteroidList(const AsteroidList& src)
 }
 
 AsteroidList::~AsteroidList() {
-   
+    
+    if(head.getNext() != NULL){
     AsteroidListItem* ptr;
-    while(head.hasNext()){ //use getnext func
-        ptr = &head;
-        
-        head.setNext(head.getNext()->getNext());//first delete data to make sure no mem leaks
-        delete &(ptr->getData()); 
+    AsteroidListItem* hptr = head.getNext();
+    while(head.hasNext() == true){ //use getnext func
+        ptr = hptr;
+        hptr = hptr->getNext();
         delete ptr;
     }
     
@@ -72,12 +66,13 @@ AsteroidList::~AsteroidList() {
     	// except for this one and the copy constructor (because you should put all your constructors together).
     
 } 
+}
 
 void AsteroidList::pushFront(Asteroid e) { //iterate linked list by one. so take the head and make it point to that new ptr 
     AsteroidListItem * tptr0 = head.getNext();
     AsteroidListItem * tptr1 = new AsteroidListItem(e);
     
-    if(isEmpty()){
+    if(this->isEmpty()){
      //   AsteroidListItem* = new Asteroid(e);
         head.setNext(tptr1);
     }
@@ -114,16 +109,28 @@ const Asteroid& AsteroidList::front() const {
 bool AsteroidList::isEmpty() const {
     if(head.getNext() == NULL)
 	return true;
+    return false;
+    
 }
 
 int AsteroidList::size() const {
     int count = 0;
-    const AsteroidListItem* tptr = head.getNext();
+    const AsteroidListItem* tptr = &head;
+    if(tptr->getNext() == NULL){
+        return count;
+       
+    }
+   
+    //const AsteroidListItem* tptr = head.getNext();
+    count++;
     while (tptr->hasNext()){
         count++;
-        tptr = tptr ->getNext();
+        tptr = tptr->getNext();
     }
+    
 	return count;
+    
+    
 }
 
 AsteroidListItem* AsteroidList::beforeBegin() {
@@ -154,7 +161,7 @@ AsteroidListItem* AsteroidList::begin() {
         return(secPtr);
     }
     
-    
+    else
 	return nullptr;
 }
 
@@ -163,7 +170,7 @@ const AsteroidListItem* AsteroidList::begin() const {
         const AsteroidListItem* secPtr = head.getNext();
         return(secPtr);
     }
-    
+    else if(head.hasNext() == false)
 	return nullptr;
 }
 
@@ -213,32 +220,13 @@ const AsteroidListItem* AsteroidList::beforeEnd() const {
 
 AsteroidListItem* AsteroidList::end() {
     
-    AsteroidListItem* tptr = &head;
-    if(head.hasNext() == false)
-        return &head;
-    else{
-    while(tptr->hasNext())
-        tptr = tptr->getNext();
-    
-    return tptr;
-    }
-    
-   
+    return nullptr;
         
         
 }
 
 const AsteroidListItem* AsteroidList::end() const {
-    const AsteroidListItem* tptr = &head;
-    if(head.hasNext() == false)
-        return &head;
-    else{
-    while(tptr->hasNext())
-        tptr = tptr->getNext();
-    
-    return tptr;
-    }
-        
+    return nullptr;
         
 }
 
@@ -321,8 +309,8 @@ void AsteroidList::clear() { //can i just call the destructor ??
 AsteroidList& AsteroidList::operator=(const AsteroidList& src) {
     
     this->clear();
-    
-    const AsteroidListItem *ptr = &src.head;
+    if(src.head.hasNext()){
+    const AsteroidListItem *ptr = &(src.head);
     AsteroidListItem *last = NULL;
     AsteroidListItem *nptr = NULL;
     head.setNext(NULL);
@@ -334,6 +322,6 @@ AsteroidList& AsteroidList::operator=(const AsteroidList& src) {
         last = nptr;
     }
         
-    
+    }
     
 }
