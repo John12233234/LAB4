@@ -66,7 +66,8 @@ AsteroidList::~AsteroidList() {
     } 
 */
     
-    
+    //lots of false starts here. basically followed the code outlined in lecture on linked lists
+    //
     
     if(head.getNext() != NULL){
     AsteroidListItem* ptr;
@@ -131,7 +132,7 @@ bool AsteroidList::isEmpty() const {
 
 int AsteroidList::size() const {
     int count = 0;
-    const AsteroidListItem* tptr = &head;
+    const AsteroidListItem* tptr = &head; 
     if(tptr->getNext() == NULL){
         return count;
        
@@ -139,9 +140,10 @@ int AsteroidList::size() const {
    
     //const AsteroidListItem* tptr = head.getNext();
     
-    while (tptr->hasNext()){
+    while (tptr->hasNext()){ //just keep counting 
         count++;
         tptr = tptr->getNext();
+       // count++;
     }
     
 	return count;
@@ -192,7 +194,7 @@ const AsteroidListItem* AsteroidList::begin() const {
 
 AsteroidListItem* AsteroidList::beforeEnd() {
     
-    AsteroidListItem* tptr = &head;
+    AsteroidListItem* tptr = &head; //function is meant to get the last node BEFORE null
     
     
     if(head.hasNext() == false)
@@ -200,7 +202,7 @@ AsteroidListItem* AsteroidList::beforeEnd() {
     else{
         
         
-    while(tptr->hasNext()){
+    while(tptr->hasNext()){ //so just traverse the list and stop @ point where has next is false
         tptr = tptr->getNext();
     }
     
@@ -235,7 +237,7 @@ const AsteroidListItem* AsteroidList::beforeEnd() const {
 AsteroidListItem* AsteroidList::end() {
     
     return nullptr;
-        
+        //the end is ALWAYS null ptr
         
 }
 
@@ -257,7 +259,7 @@ AsteroidListItem* AsteroidList::insertAfter(AsteroidListItem* prev, Asteroid e) 
         tptr1->setNext(tptr0);
         
       
-	return prev;
+	return prev->getNext();
     }
     else{
         prev->setNext(new AsteroidListItem(e));
@@ -273,34 +275,29 @@ AsteroidListItem* AsteroidList::insertAfter(AsteroidListItem* prev, Asteroid e) 
 
 AsteroidListItem* AsteroidList::insertAfter(AsteroidListItem* prev, const AsteroidList& others) {
     
-   //  AsteroidList othersCopy(others);
-    
-        const AsteroidListItem * tptr0 = others.beforeEnd();
-        AsteroidListItem * tptr1 = prev->getNext();
+    AsteroidListItem* tptr = prev->getNext();
+    const AsteroidListItem* nptr = others.begin();
+    while (nptr != NULL){
+        prev->setNext(new AsteroidListItem(nptr->getData()));
+        prev = prev->getNext();
+        nptr = nptr->getNext();
         
-        prev->setNext(others.head.getNext()); //see if that's actually right?? 
-        tptr0->setNext(tptr1);
     
-    
-	return prev;
         
         //where are the header files???? and why do these return null 
+}
+    prev->setNext(tptr);
+    return prev;
 }
 
 AsteroidListItem* AsteroidList::eraseAfter(AsteroidListItem* prev) {
     
     if(prev->hasNext()){
     AsteroidListItem *tptr0 = prev->getNext()->getNext();
-    AsteroidListItem *tptr1 = prev->getNext();
-    delete tptr1;
+    delete prev->getNext();
     prev->setNext(tptr0);
     }
-    else
-        return prev;
-	//return nullptr;
-        
-        
-        
+    else return nullptr;
 }
 
 void AsteroidList::clear() { //can i just call the destructor ??
@@ -308,7 +305,8 @@ void AsteroidList::clear() { //can i just call the destructor ??
     
     
    if(head.getNext() != NULL){
-    AsteroidListItem* ptr;
+    AsteroidListItem* ptr; //go through the list ptr points to hptr then hptr moves to next
+    //then delete ptr (old hptr);
     AsteroidListItem* hptr = head.getNext();
     while(hptr->hasNext() == true){ //use getnext func
         ptr = hptr;
@@ -323,7 +321,12 @@ void AsteroidList::clear() { //can i just call the destructor ??
 
 AsteroidList& AsteroidList::operator=(const AsteroidList& src) {
     
-    this->clear();
+    this->clear();//using clear function to clear
+    insertAfter(&head,src);//now using insert after to make copies of src list
+    return(*this); //realized i could just use the previous functions rather than re invent the wheel
+    
+    
+    /*
     if(src.head.hasNext()){
     const AsteroidListItem *ptr = &(src.head);
     AsteroidListItem *last = NULL;
@@ -335,8 +338,8 @@ AsteroidList& AsteroidList::operator=(const AsteroidList& src) {
         else last->setNext(nptr);
         ptr = ptr->getNext();
         last = nptr;
-    }
+    }*/
         
     }
     
-}
+
